@@ -6,6 +6,7 @@ import {
 export const greeting = async (req, res, next) => {
   try {
     const visitor_name = req.query.visitor_name;
+
     const userIP =
       req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     console.log(userIP);
@@ -16,16 +17,15 @@ export const greeting = async (req, res, next) => {
       });
     }
 
-    const visitorLocationDetails = await fetchUserLocationDetails();
+    const visitorLocationDetails = await fetchUserLocationDetails(userIP);
     const visitorWeatherDetails = await fetchUserWeatherDetails(
-      visitorLocationDetails.location.region
+      visitorLocationDetails.location
     );
 
     return res.status(200).json({
       client_ip: visitorLocationDetails.ipAddress,
-      location: visitorLocationDetails.location.region,
-      greeting: `Hello, ${visitor_name}!, the temperature is ${visitorWeatherDetails.temperature} degrees Celcius in ${visitorLocationDetails.location.region}`,
-      userIP
+      location: visitorLocationDetails.location,
+      greeting: `Hello, ${visitor_name}!, the temperature is ${visitorWeatherDetails.temperature} degrees Celcius in ${visitorLocationDetails.location}`,
     });
   } catch (error) {
     next(error);

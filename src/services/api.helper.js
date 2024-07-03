@@ -3,17 +3,18 @@ import axios from "axios";
 const apiKey = process.env.APIKEY;
 const weatherApiKey = process.env.WEATHER_KEY;
 
-async function fetchUserLocationDetails() {
+async function fetchUserLocationDetails(ipAddress) {
   const options = {
     method: "GET",
-    url: `https://geo.ipify.org/api/v2/country?apiKey=${apiKey}`,
+    url: `https://freeipapi.com/api/json/${ipAddress}`,
   };
 
   try {
     const response = await axios.request(options);
+
     const userLocationDetails = {
-      ipAddress: response.data.ip,
-      location: response.data.location,
+      ipAddress: response.data.ipAddress,
+      location: response.data.cityName + " " + response.data.countryName,
     };
     return userLocationDetails;
   } catch (error) {
